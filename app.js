@@ -1,8 +1,8 @@
 window.onload = function onload() {
   // Global Variables
   let line1 = ' ';
-  const line2 = 'Line 2';
-  const line3 = 'Line 3';
+  const line2 = '';
+  const line3 = '';
   let lastNum = '';
   let numArr = [];
   let histArr = [];
@@ -27,11 +27,22 @@ window.onload = function onload() {
   const btnDecimal = document.querySelector('#btn-decimal');
   const btnEquals = document.querySelector('#btn-equals');
 
+
+  function displayCursor() {
+    document.querySelector('#cursor-div').style.display = 'block';
+    document.querySelector('#dsp-line-1').style.display = 'none';
+  }
+
+  function displayLine1() {
+    document.querySelector('#cursor-div').style.display = 'none';
+    document.querySelector('#dsp-line-1').style.display = 'block';
+  }
+
   function updateAll() {
     document.querySelector('#dsp-line-1').textContent = line1;
     document.querySelector('#dsp-line-2').textContent = histArr[histArr.length - 1];
     document.querySelector('#dsp-line-3').textContent = histArr[histArr.length - 2];
-    if (line1 === ' ') {
+    if (line1 === ' ' || line1 === '') {
       displayCursor();
     } else {
       displayLine1();
@@ -106,14 +117,12 @@ window.onload = function onload() {
     }
   }
 
-  function displayCursor() {
-    document.querySelector('#cursor-div').style.display = 'block';
-    document.querySelector('#dsp-line-1').style.display = 'none';
-  }
-
-  function displayLine1() {
-    document.querySelector('#cursor-div').style.display = 'none';
-    document.querySelector('#dsp-line-1').style.display = 'block';
+  function undo() {
+    if (histArr.length > 0) {
+      line1 = histArr.pop();
+      updateAll();
+      console.log(histArr);
+    }
   }
 
   // Listener Declarations
@@ -147,8 +156,7 @@ window.onload = function onload() {
         validateNumAndAppend('.');
       }
       if (button.id === 'btn-undo') {
-        console.log('undo btn pressed');
-        displayCursor();
+        undo();
       }
       if (button.id === 'btn-backspace') {
         backspace();
@@ -164,7 +172,7 @@ window.onload = function onload() {
         console.log('historyArr: ' + histArr);
       }
       getNumArr();
-      updateAll();
+      return updateAll();
     });
   });
 
