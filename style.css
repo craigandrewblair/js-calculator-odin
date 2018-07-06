@@ -1,0 +1,184 @@
+body {
+  font-family: 'Roboto', sans-serif;
+  background: radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(253, 127, 32, 1) 91%);
+  font-weight: bold;
+  margin: 0 0;
+  padding: 0 0;
+  height: 100vh;
+}
+
+#nav-div{
+  width: 100vw;
+  height: 10vh;
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  align-items: center;
+  background-color:rgb(2, 4, 13, 0.1);
+}
+
+#title {
+  font-size: 32px;
+  color: white;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  height: 80vh;
+  justify-content: space-evenly;
+  align-items: center;
+  background-color: white;
+  background: radial-gradient(circle, rgba(247,247,247,1) 0%, rgba(247,247,247,1) 100%);
+}
+
+#outer-rectangle {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding-top: 8px;
+  background-image: linear-gradient(-180deg, #0E3BF3 0%, #000000 80%);
+  border: 1px solid #000000;
+  box-shadow: 0 2px 4px 0 #000000;
+  border-radius: 8px;
+  height: 440px;
+  width: 420px;
+}
+
+#display-rectangle {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 5px 0 5px 10px;
+  background: rgba(0, 0, 0, 0.90);
+  border: 1px solid#979797;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.50);
+  border-radius: 8px;
+  width: 400px;
+  height: 110px;
+  color: white;
+  font-size: 22px;
+}
+
+#cursor-div{
+  display: none;
+  color: #20D130;
+}
+
+#dsp-line-2{
+  color: #F96535;
+}
+
+#dsp-line-3{
+  color: #F96535;
+}
+
+#btns-rectangle {
+  display: flex;
+  flex-direction: row;
+  height: 360px;
+  width: 400px;
+  padding-top: 10px;
+  flex-flow: wrap;
+  justify-content: space-between;
+}
+
+.btn-circle {
+  background: #DCDCDC;
+  border: 1px solid #979797;
+  box-shadow: 0 2px 4px 2px rgba(0, 0, 0, 0.50);
+  width: 70px;
+  height: 70px;
+  border-radius: 38px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.btn-circle:active {
+  background: #DCDCDC;
+  border: 0 solid #06113A;
+  box-shadow: inset 0 -1px 0 2px rgb(4, 13, 45, 0.8);
+  width: 72px;
+  height: 72px;
+  border-radius: 38px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-txt {
+  font-family: Arial-Black;
+  font-size: 50px;
+  color: #000000;
+}
+
+#display-numbers {
+  font-family: Arial-Black;
+  font-size: 32px;
+  color: #F3F3F3;
+}
+
+.btn-cancel-txt {
+  font-family: Arial-Black;
+  font-size: 60px;
+  color: #FF0000;
+}
+
+footer{
+  width: 100vw;
+  height: 10vh;
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  align-items: center;
+  background-color:rgb(2, 4, 13, 0.1);
+}
+
+#plus-img{
+  height: 35px;
+}
+#minus-img{
+  height: 12px;
+  width: 28px;
+}
+#multiply-img{
+  height: 35px;
+}
+#divide-img{
+  height: 35px;
+}
+#undo-img{
+  height: 40px;
+}
+#cancel-img{
+  height: 35px;
+}
+#equals-img{
+  height: 24px;
+}
+#backspace-img{
+  height: 25px;
+  position: relative;
+  right: 2px;
+}
+#btn-decimal{
+  font-size: 40px;
+}
+#btn-ce{
+  font-size: 36px;
+  color: #0E3BF3;
+}
+#btn-ce span{
+  position: relative;
+  left: -1px;
+  top: -1px;
+}
+
+#footer-note{
+  font-size: 16px;
+  color: white;
+}
+
+
