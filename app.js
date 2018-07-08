@@ -6,27 +6,7 @@ window.onload = function onload() {
   let lastNum = '';
   let numArr = [];
   let histArr = [];
-  const btnUndo = document.querySelector('#btn-undo');
-  const btn7 = document.querySelector('#btn-7');
-  const btn8 = document.querySelector('#btn-8');
-  const btn9 = document.querySelector('#btn-9');
-  const btnCancel = document.querySelector('#btn-cancel');
-  const btnDivide = document.querySelector('#btn-divide');
-  const btn4 = document.querySelector('#btn-4');
-  const btn5 = document.querySelector('#btn-5');
-  const btn6 = document.querySelector('#btn-6');
-  const btnPlus = document.querySelector('#btn-plus');
-  const btnMultiply = document.querySelector('#btn-multiply');
-  const btn1 = document.querySelector('#btn-1');
-  const btn2 = document.querySelector('#btn-2');
-  const btn3 = document.querySelector('#btn-3');
-  const btnMinus = document.querySelector('#btn-minus');
-  const btnBackspace = document.querySelector('#btn-backspace');
-  const btnBrackets = document.querySelector('#btn-brackets');
-  const btn0 = document.querySelector('#btn-0');
-  const btnDecimal = document.querySelector('#btn-decimal');
-  const btnEquals = document.querySelector('#btn-equals');
-
+  let line1Arr = [];
 
   function displayCursor() {
     document.querySelector('#cursor-div').style.display = 'block';
@@ -74,14 +54,11 @@ window.onload = function onload() {
   function getNumArr() {
     const arr = line1.split(' ');
     numArr = arr.filter(elem => elem.match(/\d/g));
-    console.log(`num arr: ${numArr}`);
     return numArr;
   }
 
   function getLastNum() {
     lastNum = numArr[numArr.length - 1];
-    console.log(`lastNum: ${lastNum}`);
-    console.log(typeof (lastNum));
     return lastNum;
   }
 
@@ -109,7 +86,14 @@ window.onload = function onload() {
     histArr.push(line1);
   }
 
+  function createLine1Arr() {
+    const line1Str = line1.trim();
+    line1Arr = line1Str.split(' ');
+    console.log(`line1Arr: ${line1Arr}`);
+  }
+
   function equals() {
+    createLine1Arr();
     if (line1.charAt(line1.length - 1).match(/[0-9]/g)) {
       line1 += ' = ';
       addToHistory();
@@ -119,10 +103,77 @@ window.onload = function onload() {
 
   function undo() {
     if (histArr.length > 0) {
-      line1 = histArr.pop();
+      let str = histArr[histArr.length - 1];
+      let arr = str.split('');
+      arr = arr.slice(0, arr.length - 3);
+      str = arr.join('');
+      line1 = str;
+      histArr.pop();
       updateAll();
-      console.log(histArr);
     }
+  }
+
+  function calculate(inputArr) {
+    let arr = [].concat(inputArr);
+    console.log(`arr: ${arr}`);
+    for (let i = 0; i <= arr.length; i += 1) {
+      if (arr[i] === '/') {
+        let result = 0;
+        before = parseFloat(arr[i - 1]);
+        after = parseFloat(arr[i + 1]);
+        result = before / after;
+        arr[i] = result;
+        console.log(result);
+        arr[i - 1] = '';
+        arr[i + 1] = '';
+        arr = arr.filter(elem => elem != '');
+        i = 0;
+      }
+    }
+    for (let i = 0; i <= arr.length; i++) {
+      if (arr[i] === '*') {
+        let result = 0;
+        before = parseFloat(arr[i - 1]);
+        after = parseFloat(arr[i + 1]);
+        result = before * after;
+        arr[i] = result;
+        console.log(result);
+        arr[i - 1] = '';
+        arr[i + 1] = '';
+        arr = arr.filter(elem => elem != '');
+        i = 0;
+      }
+    }
+    for (let i = 0; i <= arr.length; i++) {
+      if (arr[i] === '-') {
+        let result = 0;
+        before = parseFloat(arr[i - 1]);
+        after = parseFloat(arr[i + 1]);
+        result = before - after;
+        arr[i] = result;
+        console.log(result);
+        arr[i - 1] = '';
+        arr[i + 1] = '';
+        arr = arr.filter(elem => elem !== '');
+        i = 0;
+      }
+    }
+    for (let i = 0; i <= arr.length; i++) {
+      if (arr[i] === '+') {
+        let result = 0;
+        before = parseFloat(arr[i - 1]);
+        after = parseFloat(arr[i + 1]);
+        result = before + after;
+        arr[i] = result;
+        console.log(result);
+        arr[i - 1] = '';
+        arr[i + 1] = '';
+        arr = arr.filter(elem => elem !== '');
+        i = 0;
+      }
+    }
+    console.log(`arr: ${arr}`);
+    return arr;
   }
 
   // Listener Declarations
@@ -148,7 +199,6 @@ window.onload = function onload() {
       }
       if (button.id === 'btn-decimal') {
         getLastNum();
-        console.log(`lastNum: ${lastNum}`);
         if (lastNum.match(/\./gi)) {
           console.log('muliple points not supported');
           return line1;
@@ -169,7 +219,7 @@ window.onload = function onload() {
       }
       if (button.id === 'btn-equals') {
         equals();
-        console.log('historyArr: ' + histArr);
+        calculate(line1Arr);
       }
       getNumArr();
       return updateAll();
