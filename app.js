@@ -28,14 +28,6 @@ window.onload = function onload() {
       displayLine1();
     }
   }
-  // Checks for number character at end of line1 string, then appends str if one is found.
-  function validateNumAndAppend(str) {
-    if (line1.charAt(line1.length - 1).match(/[^0-9]/g) || line1 === '') {
-      return line1;
-    }
-    line1 += str;
-    return line1;
-  }
 
   function backspace() {
     if (line1.length > 0) {
@@ -82,41 +74,28 @@ window.onload = function onload() {
     updateAll();
   }
 
-  function addToHistory() {
-    histArr.push(line1);
-  }
-
-  function createLine1Arr() {
-    const line1Str = line1.trim();
-    line1Arr = line1Str.split(' ');
-    console.log(`line1Arr: ${line1Arr}`);
-  }
-
-  function equals() {
-    createLine1Arr();
-    if (line1.charAt(line1.length - 1).match(/[0-9]/g)) {
-      line1 += ' = ';
-      addToHistory();
-      clear();
-    }
-  }
-
   function undo() {
     if (histArr.length > 0) {
       let str = histArr[histArr.length - 1];
-      let arr = str.split('');
-      arr = arr.slice(0, arr.length - 3);
-      str = arr.join('');
+      console.log(`histStr: ${str}`);
+      let arr = str.split(' ');
+      console.log(`histArr: ${arr}`);
+      arr = arr.slice(0, arr.length - 2);
+      str = arr.join(' ');
       line1 = str;
       histArr.pop();
       updateAll();
+      console.log(`line1 after undo: ${line1}`);
     }
   }
 
   function calculate(inputArr) {
     let arr = [].concat(inputArr);
     console.log(`arr: ${arr}`);
-    for (let i = 0; i <= arr.length; i += 1) {
+    if (arr[0] === '-') {
+      arr.unshift('0');
+    }
+    for (let i = 0; i <= arr.length; i++) {
       if (arr[i] === '/') {
         let result = 0;
         before = parseFloat(arr[i - 1]);
@@ -176,6 +155,26 @@ window.onload = function onload() {
     return arr;
   }
 
+  function equals() {
+    const line1Str = line1.trim();
+    line1Arr = line1Str.split(' ');
+    if (line1.charAt(line1.length - 1).match(/[0-9]/g)) {
+      line1 += ` = ${calculate(line1Arr)}`;
+      histArr.push(line1);
+      console.log(`histArr: ${histArr}`);
+      clear();
+    }
+  }
+
+  // Checks for number character at end of line1 string, then appends str if one is found.
+  function validateNumAndAppend(str) {
+    if (line1.charAt(line1.length - 1).match(/[^0-9]/g) || line1 === '') {
+      return line1;
+    }
+    line1 += str;
+    return line1;
+  }
+
   // Listener Declarations
   const buttons = document.querySelectorAll('.btn-circle');
   buttons.forEach((button) => {
@@ -189,7 +188,16 @@ window.onload = function onload() {
         validateNumAndAppend(' + ');
       }
       if (button.id === 'btn-minus') {
-        validateNumAndAppend(' - ');
+        if (line1 === ' ') {
+          line1 = '0 - ';
+          updateAll();
+        }
+        if (line1.charAt(line1.length - 1).match(/[^0-9]/g) || line1 === '') {
+          return line1;
+        }
+        line1 += ' - ';
+        updateAll();
+        return line1;
       }
       if (button.id === 'btn-divide') {
         validateNumAndAppend(' / ');
@@ -228,4 +236,21 @@ window.onload = function onload() {
 
   // Function Calls
   updateAll();
+
+  // Button Clicks
+  document.addEventListener('keydown', (e) => {
+    switch (e.which) {
+      case 13: // enter
+        equals();
+        break;
+      case 8: // backspace
+        backspace();
+        break;
+      case 27: // escape
+        cancel();
+        break;
+      default: return;
+    }
+    e.preventDefault();
+  });
 };
