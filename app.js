@@ -91,8 +91,8 @@ window.onload = function onload() {
 
   function convertDoubleMinus(array) {
     let a = [].concat(array);
-    for (let i = 0; i <= a.length; i++) {
-      if (a[i - 1] === '-' && a[i] === '-') {        
+    for (let i = 0; i <= a.length; i += 1) {
+      if (a[i - 1] === '-' && a[i] === '-') {
         a[i] = '+';
         a[i - 1] = '';
         a = a.filter(elem => elem !== '');
@@ -103,67 +103,32 @@ window.onload = function onload() {
   }
 
   function calculate(inputArr) {
+    const operatorArray = ['/', '*', '-', '+'];
+    const funcOperatorArr = [
+      function divideFunc(before, after) { return before / after; },
+      function muliplyFunc(before, after) { return before * after; },
+      function minusFunc(before, after) { return before - after; },
+      function plusFunc(before, after) { return before + after; },
+    ];
     let arr = [].concat(inputArr);
-    console.log(`arr: ${arr}`);
     arr = convertDoubleMinus(arr);
-    console.log('arr after double minus function: ' + arr)
     if (arr[0] === '-') {
       arr.unshift('0');
     }
-    for (let i = 0; i <= arr.length; i++) {
-      if (arr[i] === '/') {
-        let result = 0;
-        before = parseFloat(arr[i - 1]);
-        after = parseFloat(arr[i + 1]);
-        result = before / after;
-        arr[i] = result;
-        console.log(result);
-        arr[i - 1] = '';
-        arr[i + 1] = '';
-        arr = arr.filter(elem => elem !== '');
-        i = 0;
-      }
-    }
-    for (let i = 0; i <= arr.length; i++) {
-      if (arr[i] === '*') {
-        let result = 0;
-        before = parseFloat(arr[i - 1]);
-        after = parseFloat(arr[i + 1]);
-        result = before * after;
-        arr[i] = result;
-        console.log(result);
-        arr[i - 1] = '';
-        arr[i + 1] = '';
-        arr = arr.filter(elem => elem != '');
-        i = 0;
-      }
-    }
-    for (let i = 0; i <= arr.length; i++) {
-      if (arr[i] === '-') {
-        let result = 0;
-        before = parseFloat(arr[i - 1]);
-        after = parseFloat(arr[i + 1]);
-        result = before - after;
-        arr[i] = result;
-        console.log(result);
-        arr[i - 1] = '';
-        arr[i + 1] = '';
-        arr = arr.filter(elem => elem !== '');
-        i = 0;
-      }
-    }
-    for (let i = 0; i <= arr.length; i++) {
-      if (arr[i] === '+') {
-        let result = 0;
-        before = parseFloat(arr[i - 1]);
-        after = parseFloat(arr[i + 1]);
-        result = before + after;
-        arr[i] = result;
-        console.log(result);
-        arr[i - 1] = '';
-        arr[i + 1] = '';
-        arr = arr.filter(elem => elem !== '');
-        i = 0;
+    for (let j = 0; j < operatorArray.length; j += 1) {
+      for (let i = 0; i <= arr.length; i += 1) {
+        if (arr[i] === operatorArray[j]) {
+          let result = 0;
+          const before = parseFloat(arr[i - 1]);
+          const after = parseFloat(arr[i + 1]);
+          result = funcOperatorArr[j](before, after);
+          arr[i] = result;
+          console.log(result);
+          arr[i - 1] = '';
+          arr[i + 1] = '';
+          arr = arr.filter(elem => elem !== '');
+          i = 0;
+        }
       }
     }
     console.log(`arr: ${arr}`);
@@ -196,8 +161,6 @@ window.onload = function onload() {
   const buttons = document.querySelectorAll('.btn-circle');
   buttons.forEach((button) => {
     button.addEventListener('click', (e) => {
-      // console.log(button.id);
-      // console.log(button.textContent);
       if (button.textContent.match(/[0-9]/g)) {
         line1 += button.textContent;
       }
@@ -259,10 +222,7 @@ window.onload = function onload() {
     });
   });
 
-  // Function Calls
-  updateAll();
-
-  // Button Clicks
+  // Keyboard Buttons
   document.addEventListener('keydown', (e) => {
     switch (e.which) {
       case 13: // enter
@@ -278,4 +238,7 @@ window.onload = function onload() {
     }
     e.preventDefault();
   });
+
+  // Function Calls
+  updateAll();
 };
