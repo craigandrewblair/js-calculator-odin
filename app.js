@@ -22,11 +22,7 @@ window.onload = function onload() {
     document.querySelector('#dsp-line-1').textContent = line1;
     document.querySelector('#dsp-line-2').textContent = histArr[histArr.length - 1];
     document.querySelector('#dsp-line-3').textContent = histArr[histArr.length - 2];
-    if (line1 === ' ' || line1 === '') {
-      displayCursor();
-    } else {
-      displayLine1();
-    }
+    return line1 === ' ' || line1 === '' ? displayCursor() : displayLine1();
   }
 
   function backspace() {
@@ -77,15 +73,12 @@ window.onload = function onload() {
   function undo() {
     if (histArr.length > 0) {
       let str = histArr[histArr.length - 1];
-      console.log(`histStr: ${str}`);
       let arr = str.split(' ');
-      console.log(`histArr: ${arr}`);
       arr = arr.slice(0, arr.length - 2);
       str = arr.join(' ');
       line1 = str;
       histArr.pop();
       updateAll();
-      console.log(`line1 after undo: ${line1}`);
     }
   }
 
@@ -123,7 +116,6 @@ window.onload = function onload() {
           const after = parseFloat(arr[i + 1]);
           result = funcOperatorArr[j](before, after);
           arr[i] = result;
-          console.log(result);
           arr[i - 1] = '';
           arr[i + 1] = '';
           arr = arr.filter(elem => elem !== '');
@@ -131,7 +123,6 @@ window.onload = function onload() {
         }
       }
     }
-    console.log(`arr: ${arr}`);
     return arr;
   }
 
@@ -141,9 +132,6 @@ window.onload = function onload() {
     if (line1.charAt(line1.length - 1).match(/[0-9]/g)) {
       line1 += ` = ${calculate(line1Arr)}`;
       histArr.push(line1);
-      // console.log(`histArr: ${histArr}`);
-      // console.log(`line1: ${line1}`);
-      // console.log(`lineArr: ${line1Arr}`);
       clear();
     }
   }
@@ -182,8 +170,6 @@ window.onload = function onload() {
         }
         line1 += ' - ';
         updateAll();
-        console.log(line1);
-        console.log(`line1 length: ${line1.length}`);
         return line1;
       }
 
@@ -196,7 +182,6 @@ window.onload = function onload() {
       if (button.id === 'btn-decimal') {
         getLastNum();
         if (lastNum.match(/\./gi)) {
-          console.log('muliple points not supported');
           return line1;
         }
         validateNumAndAppend('.');
