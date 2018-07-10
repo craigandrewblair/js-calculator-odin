@@ -89,9 +89,24 @@ window.onload = function onload() {
     }
   }
 
+  function convertDoubleMinus(array) {
+    let a = [].concat(array);
+    for (let i = 0; i <= a.length; i++) {
+      if (a[i - 1] === '-' && a[i] === '-') {        
+        a[i] = '+';
+        a[i - 1] = '';
+        a = a.filter(elem => elem !== '');
+        i = 0;
+      }
+    }
+    return a;
+  }
+
   function calculate(inputArr) {
     let arr = [].concat(inputArr);
     console.log(`arr: ${arr}`);
+    arr = convertDoubleMinus(arr);
+    console.log('arr after double minus function: ' + arr)
     if (arr[0] === '-') {
       arr.unshift('0');
     }
@@ -105,7 +120,7 @@ window.onload = function onload() {
         console.log(result);
         arr[i - 1] = '';
         arr[i + 1] = '';
-        arr = arr.filter(elem => elem != '');
+        arr = arr.filter(elem => elem !== '');
         i = 0;
       }
     }
@@ -161,7 +176,9 @@ window.onload = function onload() {
     if (line1.charAt(line1.length - 1).match(/[0-9]/g)) {
       line1 += ` = ${calculate(line1Arr)}`;
       histArr.push(line1);
-      console.log(`histArr: ${histArr}`);
+      // console.log(`histArr: ${histArr}`);
+      // console.log(`line1: ${line1}`);
+      // console.log(`lineArr: ${line1Arr}`);
       clear();
     }
   }
@@ -187,18 +204,26 @@ window.onload = function onload() {
       if (button.id === 'btn-plus') {
         validateNumAndAppend(' + ');
       }
+
       if (button.id === 'btn-minus') {
         if (line1 === ' ') {
-          line1 = '0 - ';
-          updateAll();
+          line1 = '- ';
+          return updateAll();
+        }
+        if (line1.charAt(line1.length - 4).match(/[0-9]/g) && line1.charAt(line1.length - 3) === ' ' && line1.charAt(line1.length - 2) === '-' && line1.charAt(line1.length - 1) === ' ') {
+          line1 += '- ';
+          return updateAll();
         }
         if (line1.charAt(line1.length - 1).match(/[^0-9]/g) || line1 === '') {
           return line1;
         }
         line1 += ' - ';
         updateAll();
+        console.log(line1);
+        console.log(`line1 length: ${line1.length}`);
         return line1;
       }
+
       if (button.id === 'btn-divide') {
         validateNumAndAppend(' / ');
       }
