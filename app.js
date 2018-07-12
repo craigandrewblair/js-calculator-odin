@@ -26,16 +26,23 @@ window.onload = function onload() {
   }
 
   function backspace() {
-    if (line1.length > 0) {
-      const arr = line1.split('');
-      if (arr[arr.length - 1] === ' ') {
-        arr.pop();
-        arr.pop();
-        updateAll();
-      }
-      arr.pop();
+    let arr = line1.split('');
+    if (arr[0] === '-' && arr[1] === ' ' && arr.length === 2) {
+      arr = [' '];
       line1 = arr.join('');
-      updateAll();
+      return updateAll();
+    }
+    if (arr.length > 1) {
+      if (arr[arr.length - 1].match(/[0-9]/g) && arr.length > 1) {
+        arr.pop();
+        line1 = arr.join('');
+        return updateAll();
+      }
+      while (arr[arr.length - 1].match(/[^0-9]/g) && arr.length > 1) {
+        arr.pop();
+        line1 = arr.join('');
+      }
+      return updateAll();
     }
   }
 
@@ -82,19 +89,6 @@ window.onload = function onload() {
     }
   }
 
-  function convertDoubleMinus(array) {
-    let a = [].concat(array);
-    for (let i = 0; i <= a.length; i += 1) {
-      if (a[i - 1] === '-' && a[i] === '-') {
-        a[i] = '+';
-        a[i - 1] = '';
-        a = a.filter(elem => elem !== '');
-        i = 0;
-      }
-    }
-    return a;
-  }
-
   function calculate(inputArr) {
     const operatorArray = ['/', '*', '-', '+'];
     const funcOperatorArr = [
@@ -102,27 +96,115 @@ window.onload = function onload() {
       function muliplyFunc(before, after) { return before * after; },
       function minusFunc(before, after) { return before - after; },
       function plusFunc(before, after) { return before + after; },
+      function negDivideFunc(before, after) { return before / -after; },
+      function negMuliplyFunc(before, after) { return before * -after; },
+      function negMinusFunc(before, after) { return before - -after; },
+      function negPlusFunc(before, after) { return before + -after; },
     ];
     let arr = [].concat(inputArr);
-    arr = convertDoubleMinus(arr);
     if (arr[0] === '-') {
       arr.unshift('0');
     }
-    for (let j = 0; j < operatorArray.length; j += 1) {
-      for (let i = 0; i <= arr.length; i += 1) {
-        if (arr[i] === operatorArray[j]) {
-          let result = 0;
-          const before = parseFloat(arr[i - 1]);
-          const after = parseFloat(arr[i + 1]);
-          result = funcOperatorArr[j](before, after);
-          arr[i] = result;
-          arr[i - 1] = '';
-          arr[i + 1] = '';
-          arr = arr.filter(elem => elem !== '');
-          i = 0;
-        }
+    console.log(`arr after minus zero shift: ${arr}`);
+    for (let i = 0; i <= arr.length; i++) {
+      if (arr[i] === '/' && arr[i + 1] === '-') {
+        let result = 0;
+        before = parseFloat(arr[i - 1]);
+        after = parseFloat(arr[i + 2]);
+        result = before / -after;
+        arr[i] = result;
+        arr[i - 1] = '';
+        arr[i + 1] = '';
+        arr[i + 2] = '';
+        arr = arr.filter(elem => elem !== '');
+        i = 0;
       }
     }
+    for (let i = 0; i <= arr.length; i++) {
+      if (arr[i] === '/') {
+        let result = 0;
+        before = parseFloat(arr[i - 1]);
+        after = parseFloat(arr[i + 1]);
+        result = before / after;
+        arr[i] = result;
+        arr[i - 1] = '';
+        arr[i + 1] = '';
+        arr = arr.filter(elem => elem !== '');
+        i = 0;
+      }
+    }
+    for (let i = 0; i <= arr.length; i++) {
+      if (arr[i] === '*' && arr[i + 1] === '-') {
+        let result = 0;
+        before = parseFloat(arr[i - 1]);
+        after = parseFloat(arr[i + 2]);
+        result = before * -after;
+        arr[i] = result;
+        arr[i - 1] = '';
+        arr[i + 1] = '';
+        arr[i + 2] = '';
+        arr = arr.filter(elem => elem !== '');
+        i = 0;
+      }
+    }
+    for (let i = 0; i <= arr.length; i++) {
+      if (arr[i] === '*') {
+        let result = 0;
+        before = parseFloat(arr[i - 1]);
+        after = parseFloat(arr[i + 1]);
+        result = before * after;
+        arr[i] = result;
+        arr[i - 1] = '';
+        arr[i + 1] = '';
+        arr = arr.filter(elem => elem !== '');
+        i = 0;
+      }
+    }
+    for (let i = 0; i <= arr.length; i++) {
+      if (arr[i] === '+' && arr[i + 1] === '-') {
+        arr[i] = '-';
+        arr[i + 1] = '';
+        arr = arr.filter(elem => elem !== '');
+        console.log(`during - - function: ${arr}`);
+      }
+    }
+    console.log(`before - - arr: ${arr}`);
+    for (let i = 0; i <= arr.length; i++) {
+      if (arr[i] === '-' && arr[i + 1] === '-') {
+        arr[i] = '+';
+        arr[i + 1] = '';
+        arr = arr.filter(elem => elem !== '');
+        console.log(`during - - function: ${arr}`);
+      }
+    }
+    for (let i = 0; i <= arr.length; i++) {
+      console.log(arr[i]);
+      if (arr[i] === '-') {
+        let result = 0;
+        before = parseFloat(arr[i - 1]);
+        after = parseFloat(arr[i + 1]);
+        result = before - after;
+        arr[i] = result;
+        arr[i - 1] = '';
+        arr[i + 1] = '';
+        arr = arr.filter(elem => elem !== '');
+        i = 0;
+      }
+    }
+    for (let i = 0; i <= arr.length; i++) {
+      if (arr[i] === '+') {
+        let result = 0;
+        before = parseFloat(arr[i - 1]);
+        after = parseFloat(arr[i + 1]);
+        result = before + after;
+        arr[i] = result;
+        arr[i - 1] = '';
+        arr[i + 1] = '';
+        arr = arr.filter(elem => elem !== '');
+        i = 0;
+      }
+    }
+    console.log(`final output arr: ${arr}`);
     return arr;
   }
 
@@ -136,7 +218,7 @@ window.onload = function onload() {
     }
   }
 
-  // Checks for number character at end of line1 string, then appends str if one is found.
+  // Prevents multiple consecutive operator input
   function validateNumAndAppend(str) {
     if (line1.charAt(line1.length - 1).match(/[^0-9]/g) || line1 === '') {
       return line1;
@@ -149,20 +231,13 @@ window.onload = function onload() {
   const buttons = document.querySelectorAll('.btn-circle');
   buttons.forEach((button) => {
     button.addEventListener('click', (e) => {
-      if (button.textContent.match(/[0-9]/g)) {
-        line1 += button.textContent;
-      }
-      if (button.id === 'btn-plus') {
-        validateNumAndAppend(' + ');
-      }
-
       if (button.id === 'btn-minus') {
-        if (line1 === ' ') {
-          line1 = '- ';
+        if (line1.charAt(line1.length - 4).match(/[0-9]/g) && line1.charAt(line1.length - 3) === ' ' && (line1.charAt(line1.length - 2) === '*' || line1.charAt(line1.length - 2) === '/' || line1.charAt(line1.length - 2) === '-' || line1.charAt(line1.length - 2) === '+') && line1.charAt(line1.length - 1) === ' ') {
+          line1 += '- ';
           return updateAll();
         }
-        if (line1.charAt(line1.length - 4).match(/[0-9]/g) && line1.charAt(line1.length - 3) === ' ' && line1.charAt(line1.length - 2) === '-' && line1.charAt(line1.length - 1) === ' ') {
-          line1 += '- ';
+        if (line1 === ' ') {
+          line1 = '- ';
           return updateAll();
         }
         if (line1.charAt(line1.length - 1).match(/[^0-9]/g) || line1 === '') {
@@ -171,6 +246,12 @@ window.onload = function onload() {
         line1 += ' - ';
         updateAll();
         return line1;
+      }
+      if (button.textContent.match(/[0-9]/g)) {
+        line1 += button.textContent;
+      }
+      if (button.id === 'btn-plus') {
+        validateNumAndAppend(' + ');
       }
 
       if (button.id === 'btn-divide') {
@@ -200,7 +281,7 @@ window.onload = function onload() {
       }
       if (button.id === 'btn-equals') {
         equals();
-        calculate(line1Arr);
+        // calculate(line1Arr);
       }
       getNumArr();
       return updateAll();
