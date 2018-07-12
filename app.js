@@ -82,8 +82,66 @@ window.onload = function onload() {
     }
   }
 
+  function calcSingleOp(array, str, opFunc) {
+    let before;
+    let after;
+    let arr = [].concat(array);
+    let i = 0;
+    while (i <= arr.length) {
+      if (arr[i] === str) {
+        let result = 0;
+        before = parseFloat(arr[i - 1]);
+        after = parseFloat(arr[i + 1]);
+        result = opFunc(before, after);
+        arr[i] = result;
+        arr[i - 1] = '';
+        arr[i + 1] = '';
+        arr = arr.filter(elem => elem !== '');
+        i = 0;
+      }
+      i += 1;
+    }
+    return arr;
+  }
+
+  function calcMultipleOpLong(array, str1, str2, opFunc) {
+    let before;
+    let after;
+    let arr = [].concat(array);
+    let i = 0;
+    while (i <= arr.length) {
+      if (arr[i] === str1 && arr[i + 1] === str2) {
+        let result = 0;
+        before = parseFloat(arr[i - 1]);
+        after = parseFloat(arr[i + 2]);
+        result = opFunc(before, after);
+        arr[i] = result;
+        arr[i - 1] = '';
+        arr[i + 1] = '';
+        arr[i + 2] = '';
+        arr = arr.filter(elem => elem !== '');
+        i = 0;
+      }
+      i += 1;
+    }
+    return arr;
+  }
+
+  function calcMultipleOpShort(array, str1, str2, str3) {
+    let arr = [].concat(array);
+    let i = 0;
+    while (i <= arr.length) {
+      if (arr[i] === str1 && arr[i + 1] === str2) {
+        arr[i] = str3;
+        arr[i + 1] = '';
+        arr = arr.filter(elem => elem !== '');
+      }
+      i += 1;
+    }
+    return arr;
+  }
+
   function calculate(inputArr) {
-    const operatorArray = ['/', '*', '-', '+'];
     const funcOperatorArr = [
       function divideFunc(before, after) { return before / after; },
       function muliplyFunc(before, after) { return before * after; },
@@ -94,106 +152,18 @@ window.onload = function onload() {
       function negMinusFunc(before, after) { return before - -after; },
       function negPlusFunc(before, after) { return before + -after; },
     ];
-    let before;
-    let after;
     let arr = [].concat(inputArr);
     if (arr[0] === '-') {
       arr.unshift('0');
     }
-    for (let i = 0; i <= arr.length; i += 1) {
-      if (arr[i] === '/' && arr[i + 1] === '-') {
-        let result = 0;
-        before = parseFloat(arr[i - 1]);
-        after = parseFloat(arr[i + 2]);
-        result = before / -after;
-        arr[i] = result;
-        arr[i - 1] = '';
-        arr[i + 1] = '';
-        arr[i + 2] = '';
-        arr = arr.filter(elem => elem !== '');
-        i = 0;
-      }
-    }
-    for (let i = 0; i <= arr.length; i += 1) {
-      if (arr[i] === '/') {
-        let result = 0;
-        before = parseFloat(arr[i - 1]);
-        after = parseFloat(arr[i + 1]);
-        result = before / after;
-        arr[i] = result;
-        arr[i - 1] = '';
-        arr[i + 1] = '';
-        arr = arr.filter(elem => elem !== '');
-        i = 0;
-      }
-    }
-    for (let i = 0; i <= arr.length; i += 1) {
-      if (arr[i] === '*' && arr[i + 1] === '-') {
-        let result = 0;
-        before = parseFloat(arr[i - 1]);
-        after = parseFloat(arr[i + 2]);
-        result = before * -after;
-        arr[i] = result;
-        arr[i - 1] = '';
-        arr[i + 1] = '';
-        arr[i + 2] = '';
-        arr = arr.filter(elem => elem !== '');
-        i = 0;
-      }
-    }
-    for (let i = 0; i <= arr.length; i += 1) {
-      if (arr[i] === '*') {
-        let result = 0;
-        before = parseFloat(arr[i - 1]);
-        after = parseFloat(arr[i + 1]);
-        result = before * after;
-        arr[i] = result;
-        arr[i - 1] = '';
-        arr[i + 1] = '';
-        arr = arr.filter(elem => elem !== '');
-        i = 0;
-      }
-    }
-    for (let i = 0; i <= arr.length; i += 1) {
-      if (arr[i] === '+' && arr[i + 1] === '-') {
-        arr[i] = '-';
-        arr[i + 1] = '';
-        arr = arr.filter(elem => elem !== '');
-      }
-    }
-    for (let i = 0; i <= arr.length; i += 1) {
-      if (arr[i] === '-' && arr[i + 1] === '-') {
-        arr[i] = '+';
-        arr[i + 1] = '';
-        arr = arr.filter(elem => elem !== '');
-      }
-    }
-    for (let i = 0; i <= arr.length; i += 1) {
-      if (arr[i] === '-') {
-        let result = 0;
-        before = parseFloat(arr[i - 1]);
-        after = parseFloat(arr[i + 1]);
-        result = before - after;
-        arr[i] = result;
-        arr[i - 1] = '';
-        arr[i + 1] = '';
-        arr = arr.filter(elem => elem !== '');
-        i = 0;
-      }
-    }
-    for (let i = 0; i <= arr.length; i += 1) {
-      if (arr[i] === '+') {
-        let result = 0;
-        before = parseFloat(arr[i - 1]);
-        after = parseFloat(arr[i + 1]);
-        result = before + after;
-        arr[i] = result;
-        arr[i - 1] = '';
-        arr[i + 1] = '';
-        arr = arr.filter(elem => elem !== '');
-        i = 0;
-      }
-    }
+    arr = calcMultipleOpLong(arr, '/', '-', funcOperatorArr[4]);
+    arr = calcSingleOp(arr, '/', funcOperatorArr[0]);
+    arr = calcMultipleOpLong(arr, '*', '-', funcOperatorArr[5]);
+    arr = calcSingleOp(arr, '*', funcOperatorArr[1]);
+    arr = calcMultipleOpShort(arr, '+', '-', '-');
+    arr = calcMultipleOpShort(arr, '-', '-', '+');
+    arr = calcSingleOp(arr, '-', funcOperatorArr[2]);
+    arr = calcSingleOp(arr, '+', funcOperatorArr[3]);
     return arr;
   }
 
