@@ -1,21 +1,23 @@
 window.onload = function onload() {
-  // Global Variables
+  // Globals
   let line1 = ' ';
   let lastNum = '';
   let numArr = [];
   let histArr = [];
   let line1Arr = [];
 
+  // Make green cursor visible & hide line1 content
   function displayCursor() {
     document.querySelector('#cursor-div').style.display = 'block';
     document.querySelector('#dsp-line-1').style.display = 'none';
   }
-
+  // Hide green cursor & display line1 content
   function displayLine1() {
     document.querySelector('#cursor-div').style.display = 'none';
     document.querySelector('#dsp-line-1').style.display = 'block';
   }
 
+  // Update GUI elements to reflect model
   function update() {
     document.querySelector('#dsp-line-1').textContent = line1;
     document.querySelector('#dsp-line-2').textContent = histArr[histArr.length - 1];
@@ -23,6 +25,7 @@ window.onload = function onload() {
     return line1 === ' ' || line1 === '' ? displayCursor() : displayLine1();
   }
 
+  // Allows user to delete latest entered character with each click (orange backspace icon)
   function backspace() {
     let arr = line1.split('');
     if (arr[0] === '-' && arr[1] === ' ' && arr.length === 2) {
@@ -44,25 +47,24 @@ window.onload = function onload() {
     return update();
   }
 
+  // Filters number array of unwanted elements and returns it
   function getNumArr() {
     const arr = line1.split(' ');
     numArr = arr.filter(elem => elem.match(/\d/g));
     return numArr;
   }
 
-  function clear() {
-    line1 = ' ';
-    return update();
-  }
-
+  // Resets globals to defaults and updates view to reflect this (C)
   function cancel() {
     line1 = ' ';
     lastNum = '';
     numArr = [];
     histArr = [];
+    line1Arr = [];
     return update();
   }
 
+  // Sets globals relating to current calculation and updates view to reflect this (CE)
   function cancelEntry() {
     line1 = ' ';
     lastNum = '';
@@ -70,6 +72,7 @@ window.onload = function onload() {
     return update();
   }
 
+  // Retrieves the last calculation performed by the user from history array and displays ready for using again
   function undo() {
     if (histArr.length > 0) {
       let str = histArr[histArr.length - 1];
@@ -82,6 +85,7 @@ window.onload = function onload() {
     }
   }
 
+  // Calculations with single +, -, *, / operations
   function calcSingleOp(array, str, opFunc) {
     let before;
     let after;
@@ -104,6 +108,7 @@ window.onload = function onload() {
     return arr;
   }
 
+  // Calculations with /- and *- operations
   function calcMultipleOpLong(array, str1, str2, opFunc) {
     let before;
     let after;
@@ -127,6 +132,7 @@ window.onload = function onload() {
     return arr;
   }
 
+  // Calculations with +- and -- operations
   function calcMultipleOpShort(array, str1, str2, str3) {
     let arr = [].concat(array);
     let i = 0;
@@ -141,6 +147,8 @@ window.onload = function onload() {
     return arr;
   }
 
+  // Takes array (calculation string converted to array) and calculates answer using BODMAS (calcuator doesn't feature manual bracket function, instead this function works out precidence)
+  // Calculates decimals, negative numbers, including /, *, +, -, /-, *-, --, +-.
   function calculate(inputArr) {
     const funcOperatorArr = [
       function divideFunc(before, after) { return before / after; },
@@ -173,8 +181,10 @@ window.onload = function onload() {
     if (line1.charAt(line1.length - 1).match(/[0-9]/g)) {
       line1 += ` = ${calculate(line1Arr)}`;
       histArr.push(line1);
-      clear();
+      line1 = ' ';
+      return update();
     }
+    return update();
   }
 
   // Prevents multiple invalid consecutive operator inputs
@@ -186,10 +196,11 @@ window.onload = function onload() {
     return update();
   }
 
-  // Soft EventListener Declarations
+  // Soft event listeners
   const buttons = document.querySelectorAll('.btn-circle');
   buttons.forEach((button) => {
     button.addEventListener('click', (e) => {
+      // Handles multiple scenarios of a minus input
       if (button.id === 'btn-minus') {
         if (line1.charAt(line1.length - 4).match(/[0-9]/g) && line1.charAt(line1.length - 3) === ' ' && (line1.charAt(line1.length - 2) === '*' || line1.charAt(line1.length - 2) === '/' || line1.charAt(line1.length - 2) === '-' || line1.charAt(line1.length - 2) === '+') && line1.charAt(line1.length - 1) === ' ') {
           line1 += '- ';
@@ -247,7 +258,7 @@ window.onload = function onload() {
     });
   });
 
-  // Hard EventListeners
+  // Hard event listeners
   document.addEventListener('keydown', (e) => {
     switch (e.which) {
       case 13: // enter
@@ -263,6 +274,6 @@ window.onload = function onload() {
     }
     e.preventDefault();
   });
-
+  // Updates view to reflect model
   update();
 };
