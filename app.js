@@ -1,8 +1,6 @@
 window.onload = function onload() {
   // Global Variables
   let line1 = ' ';
-  const line2 = '';
-  const line3 = '';
   let lastNum = '';
   let numArr = [];
   let histArr = [];
@@ -18,7 +16,7 @@ window.onload = function onload() {
     document.querySelector('#dsp-line-1').style.display = 'block';
   }
 
-  function updateAll() {
+  function update() {
     document.querySelector('#dsp-line-1').textContent = line1;
     document.querySelector('#dsp-line-2').textContent = histArr[histArr.length - 1];
     document.querySelector('#dsp-line-3').textContent = histArr[histArr.length - 2];
@@ -30,20 +28,20 @@ window.onload = function onload() {
     if (arr[0] === '-' && arr[1] === ' ' && arr.length === 2) {
       arr = [' '];
       line1 = arr.join('');
-      return updateAll();
+      return update();
     }
     if (arr.length > 1) {
       if (arr[arr.length - 1].match(/[0-9]/g) && arr.length > 1) {
         arr.pop();
         line1 = arr.join('');
-        return updateAll();
+        return update();
       }
       while (arr[arr.length - 1].match(/[^0-9]/g) && arr.length > 1) {
         arr.pop();
         line1 = arr.join('');
       }
-      return updateAll();
     }
+    return update();
   }
 
   function getNumArr() {
@@ -52,14 +50,9 @@ window.onload = function onload() {
     return numArr;
   }
 
-  function getLastNum() {
-    lastNum = numArr[numArr.length - 1];
-    return lastNum;
-  }
-
   function clear() {
     line1 = ' ';
-    updateAll();
+    return update();
   }
 
   function cancel() {
@@ -67,14 +60,14 @@ window.onload = function onload() {
     lastNum = '';
     numArr = [];
     histArr = [];
-    updateAll();
+    return update();
   }
 
   function cancelEntry() {
     line1 = ' ';
     lastNum = '';
     numArr = [];
-    updateAll();
+    return update();
   }
 
   function undo() {
@@ -85,7 +78,7 @@ window.onload = function onload() {
       str = arr.join(' ');
       line1 = str;
       histArr.pop();
-      updateAll();
+      update();
     }
   }
 
@@ -101,12 +94,13 @@ window.onload = function onload() {
       function negMinusFunc(before, after) { return before - -after; },
       function negPlusFunc(before, after) { return before + -after; },
     ];
+    let before;
+    let after;
     let arr = [].concat(inputArr);
     if (arr[0] === '-') {
       arr.unshift('0');
     }
-    console.log(`arr after minus zero shift: ${arr}`);
-    for (let i = 0; i <= arr.length; i++) {
+    for (let i = 0; i <= arr.length; i += 1) {
       if (arr[i] === '/' && arr[i + 1] === '-') {
         let result = 0;
         before = parseFloat(arr[i - 1]);
@@ -120,7 +114,7 @@ window.onload = function onload() {
         i = 0;
       }
     }
-    for (let i = 0; i <= arr.length; i++) {
+    for (let i = 0; i <= arr.length; i += 1) {
       if (arr[i] === '/') {
         let result = 0;
         before = parseFloat(arr[i - 1]);
@@ -133,7 +127,7 @@ window.onload = function onload() {
         i = 0;
       }
     }
-    for (let i = 0; i <= arr.length; i++) {
+    for (let i = 0; i <= arr.length; i += 1) {
       if (arr[i] === '*' && arr[i + 1] === '-') {
         let result = 0;
         before = parseFloat(arr[i - 1]);
@@ -147,7 +141,7 @@ window.onload = function onload() {
         i = 0;
       }
     }
-    for (let i = 0; i <= arr.length; i++) {
+    for (let i = 0; i <= arr.length; i += 1) {
       if (arr[i] === '*') {
         let result = 0;
         before = parseFloat(arr[i - 1]);
@@ -160,25 +154,21 @@ window.onload = function onload() {
         i = 0;
       }
     }
-    for (let i = 0; i <= arr.length; i++) {
+    for (let i = 0; i <= arr.length; i += 1) {
       if (arr[i] === '+' && arr[i + 1] === '-') {
         arr[i] = '-';
         arr[i + 1] = '';
         arr = arr.filter(elem => elem !== '');
-        console.log(`during - - function: ${arr}`);
       }
     }
-    console.log(`before - - arr: ${arr}`);
-    for (let i = 0; i <= arr.length; i++) {
+    for (let i = 0; i <= arr.length; i += 1) {
       if (arr[i] === '-' && arr[i + 1] === '-') {
         arr[i] = '+';
         arr[i + 1] = '';
         arr = arr.filter(elem => elem !== '');
-        console.log(`during - - function: ${arr}`);
       }
     }
-    for (let i = 0; i <= arr.length; i++) {
-      console.log(arr[i]);
+    for (let i = 0; i <= arr.length; i += 1) {
       if (arr[i] === '-') {
         let result = 0;
         before = parseFloat(arr[i - 1]);
@@ -191,7 +181,7 @@ window.onload = function onload() {
         i = 0;
       }
     }
-    for (let i = 0; i <= arr.length; i++) {
+    for (let i = 0; i <= arr.length; i += 1) {
       if (arr[i] === '+') {
         let result = 0;
         before = parseFloat(arr[i - 1]);
@@ -204,7 +194,6 @@ window.onload = function onload() {
         i = 0;
       }
     }
-    console.log(`final output arr: ${arr}`);
     return arr;
   }
 
@@ -218,77 +207,77 @@ window.onload = function onload() {
     }
   }
 
-  // Prevents multiple consecutive operator input
+  // Prevents multiple invalid consecutive operator inputs
   function validateNumAndAppend(str) {
     if (line1.charAt(line1.length - 1).match(/[^0-9]/g) || line1 === '') {
-      return line1;
+      return update();
     }
     line1 += str;
-    return line1;
+    return update();
   }
 
-  // Listener Declarations
+  // Soft EventListener Declarations
   const buttons = document.querySelectorAll('.btn-circle');
   buttons.forEach((button) => {
     button.addEventListener('click', (e) => {
       if (button.id === 'btn-minus') {
         if (line1.charAt(line1.length - 4).match(/[0-9]/g) && line1.charAt(line1.length - 3) === ' ' && (line1.charAt(line1.length - 2) === '*' || line1.charAt(line1.length - 2) === '/' || line1.charAt(line1.length - 2) === '-' || line1.charAt(line1.length - 2) === '+') && line1.charAt(line1.length - 1) === ' ') {
           line1 += '- ';
-          return updateAll();
+          return update();
         }
         if (line1 === ' ') {
           line1 = '- ';
-          return updateAll();
+          return update();
         }
         if (line1.charAt(line1.length - 1).match(/[^0-9]/g) || line1 === '') {
           return line1;
         }
         line1 += ' - ';
-        updateAll();
-        return line1;
+        return update();
       }
       if (button.textContent.match(/[0-9]/g)) {
         line1 += button.textContent;
       }
-      if (button.id === 'btn-plus') {
-        validateNumAndAppend(' + ');
-      }
-
-      if (button.id === 'btn-divide') {
-        validateNumAndAppend(' / ');
-      }
-      if (button.id === 'btn-multiply') {
-        validateNumAndAppend(' * ');
-      }
-      if (button.id === 'btn-decimal') {
-        getLastNum();
-        if (lastNum.match(/\./gi)) {
-          return line1;
-        }
-        validateNumAndAppend('.');
-      }
-      if (button.id === 'btn-undo') {
-        undo();
-      }
-      if (button.id === 'btn-backspace') {
-        backspace();
-      }
-      if (button.id === 'btn-cancel') {
-        cancel();
-      }
-      if (button.id === 'btn-ce') {
-        cancelEntry();
-      }
-      if (button.id === 'btn-equals') {
-        equals();
-        // calculate(line1Arr);
+      switch (button.id) {
+        case 'btn-plus':
+          validateNumAndAppend(' + ');
+          break;
+        case 'btn-divide':
+          validateNumAndAppend(' / ');
+          break;
+        case 'btn-multiply':
+          validateNumAndAppend(' * ');
+          break;
+        case 'btn-decimal':
+          lastNum = numArr[numArr.length - 1];
+          if (lastNum.match(/\./gi)) {
+            return line1;
+          }
+          validateNumAndAppend('.');
+          break;
+        case 'btn-undo':
+          undo();
+          break;
+        case 'btn-backspace':
+          backspace();
+          break;
+        case 'btn-cancel':
+          cancel();
+          break;
+        case 'btn-ce':
+          cancelEntry();
+          break;
+        case 'btn-equals':
+          equals();
+          break;
+      // no default
       }
       getNumArr();
-      return updateAll();
+      return update();
     });
   });
 
-  // Keyboard Buttons
+  // Hard EventListeners
   document.addEventListener('keydown', (e) => {
     switch (e.which) {
       case 13: // enter
@@ -305,6 +294,5 @@ window.onload = function onload() {
     e.preventDefault();
   });
 
-  // Function Calls
-  updateAll();
+  update();
 };
