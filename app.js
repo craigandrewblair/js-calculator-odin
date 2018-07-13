@@ -7,26 +7,26 @@ window.onload = function onload() {
   let line1Arr = [];
 
   // Make green cursor visible & hide line1 content
-  function displayCursor() {
+  const displayCursor = () => {
     document.querySelector('#cursor-div').style.display = 'block';
     document.querySelector('#dsp-line-1').style.display = 'none';
-  }
+  };
   // Hide green cursor & display line1 content
-  function displayLine1() {
+  const displayLine1 = () => {
     document.querySelector('#cursor-div').style.display = 'none';
     document.querySelector('#dsp-line-1').style.display = 'block';
-  }
+  };
 
   // Update GUI elements to reflect model
-  function update() {
+  const update = () => {
     document.querySelector('#dsp-line-1').textContent = line1;
     document.querySelector('#dsp-line-2').textContent = histArr[histArr.length - 1];
     document.querySelector('#dsp-line-3').textContent = histArr[histArr.length - 2];
     return line1 === ' ' || line1 === '' ? displayCursor() : displayLine1();
-  }
+  };
 
   // Allows user to delete latest entered character with each click (orange backspace icon)
-  function backspace() {
+  const backspace = () => {
     let arr = line1.split('');
     if (arr[0] === '-' && arr[1] === ' ' && arr.length === 2) {
       arr = [' '];
@@ -45,35 +45,35 @@ window.onload = function onload() {
       }
     }
     return update();
-  }
+  };
 
   // Filters number array of unwanted elements and returns it
-  function getNumArr() {
+  const getNumArr = () => {
     const arr = line1.split(' ');
     numArr = arr.filter(elem => elem.match(/\d/g));
     return numArr;
-  }
+  };
 
   // Resets globals to defaults and updates view to reflect this (C)
-  function cancel() {
+  const cancel = () => {
     line1 = ' ';
     lastNum = '';
     numArr = [];
     histArr = [];
     line1Arr = [];
     return update();
-  }
+  };
 
   // Sets globals relating to current calculation and updates view to reflect this (CE)
-  function cancelEntry() {
+  const cancelEntry = () => {
     line1 = ' ';
     lastNum = '';
     numArr = [];
     return update();
-  }
+  };
 
   // Retrieves the last calculation performed by the user from history array and displays ready for using again
-  function undo() {
+  const undo = () => {
     if (histArr.length > 0) {
       let str = histArr[histArr.length - 1];
       let arr = str.split(' ');
@@ -83,10 +83,10 @@ window.onload = function onload() {
       histArr.pop();
       update();
     }
-  }
+  };
 
   // Calculations with single +, -, *, / operations
-  function calcSingleOp(array, str, opFunc) {
+  const calcSingleOp = (array, str, opFunc) => {
     let before;
     let after;
     let arr = [].concat(array);
@@ -106,10 +106,10 @@ window.onload = function onload() {
       i += 1;
     }
     return arr;
-  }
+  };
 
   // Calculations with /- and *- operations
-  function calcMultipleOpLong(array, str1, str2, opFunc) {
+  const calcMultipleOpLong = (array, str1, str2, opFunc) => {
     let before;
     let after;
     let arr = [].concat(array);
@@ -130,10 +130,10 @@ window.onload = function onload() {
       i += 1;
     }
     return arr;
-  }
+  };
 
   // Calculations with +- and -- operations
-  function calcMultipleOpShort(array, str1, str2, str3) {
+  const calcMultipleOpShort = (array, str1, str2, str3) => {
     let arr = [].concat(array);
     let i = 0;
     while (i <= arr.length) {
@@ -145,11 +145,11 @@ window.onload = function onload() {
       i += 1;
     }
     return arr;
-  }
+  };
 
   // Takes array (calculation string converted to array) and calculates answer using BODMAS (calcuator doesn't feature manual bracket function, instead this function works out precidence)
   // Calculates decimals, negative numbers, including /, *, +, -, /-, *-, --, +-.
-  function calculate(inputArr) {
+  const calculate = (inputArr) => {
     const funcOperatorArr = [
       function divideFunc(before, after) { return before / after; },
       function muliplyFunc(before, after) { return before * after; },
@@ -173,9 +173,9 @@ window.onload = function onload() {
     arr = calcSingleOp(arr, '-', funcOperatorArr[2]);
     arr = calcSingleOp(arr, '+', funcOperatorArr[3]);
     return arr;
-  }
+  };
 
-  function equals() {
+  const equals = () => {
     const line1Str = line1.trim();
     line1Arr = line1Str.split(' ');
     if (line1.charAt(line1.length - 1).match(/[0-9]/g)) {
@@ -185,16 +185,16 @@ window.onload = function onload() {
       return update();
     }
     return update();
-  }
+  };
 
   // Prevents multiple invalid consecutive operator inputs
-  function validateNumAndAppend(str) {
+  const validateNumAndAppend = (str) => {
     if (line1.charAt(line1.length - 1).match(/[^0-9]/g) || line1 === '') {
       return update();
     }
     line1 += str;
     return update();
-  }
+  };
 
   // Soft event listeners
   const buttons = document.querySelectorAll('.btn-circle');
