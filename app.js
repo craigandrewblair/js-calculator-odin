@@ -1,4 +1,5 @@
 window.onload = function onload() {
+
   // Globals
   let line1 = ' ';
   let lastNum = '';
